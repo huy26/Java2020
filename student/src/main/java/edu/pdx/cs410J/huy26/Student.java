@@ -9,7 +9,8 @@ import java.util.ArrayList;
  */                                                                                 
 public class Student extends Human {
 
-  private double gpa;
+  private final double gpa;
+  private final ArrayList<String> classes;
 
   /**                                                                               
    * Creates a new <code>Student</code>                                             
@@ -27,6 +28,7 @@ public class Student extends Human {
   public Student(String name, ArrayList<String> classes, double gpa, String gender) {
     super(name);
     this.gpa = gpa;
+    this.classes = classes;
   }
 
   /**                                                                               
@@ -42,7 +44,7 @@ public class Student extends Human {
    * <code>Student</code>.                                                          
    */                                                                               
   public String toString() {
-    return this.getName() +" has a GPA of " + this.gpa;
+    return this.getName() +" has a GPA of " + this.gpa + " and is taking " + this.classes.size() + " classes";
   }
 
   /**

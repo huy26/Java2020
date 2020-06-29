@@ -1,5 +1,6 @@
 package edu.pdx.cs410J.huy26;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -36,5 +37,30 @@ public class StudentTest
     double gpa = 3.76;
     Student pat = new Student("Pat", new ArrayList<>(), gpa,"Doesn't matter");
     assertThat(pat.toString(), containsString("has a GPA of "+gpa));
+  }
+
+  @Ignore
+  @Test
+  public void toStringForExampleInAssignment(){
+    Student dave = createDaveStudent();
+
+    assertThat(dave.toString(), equalTo("Dave has a GPA of 3.64 and is taking 3 classes: Algorithms, Operating\n" +
+            "Systems, and Java.  He says \"This class is too much work\"."));
+
+  }
+
+  private Student createDaveStudent() {
+    ArrayList<String> classes = new ArrayList<>();
+    classes.add("Algorithms");
+    classes.add("Operating Systems");
+    classes.add("Java");
+    return new Student("Dave", classes, 3.64,"male");
+  }
+
+  @Test
+  public void daveTakes3Classes(){
+    Student dave = createDaveStudent();
+
+    assertThat(dave.toString(), containsString("and is taking 3 classes"));
   }
 }
