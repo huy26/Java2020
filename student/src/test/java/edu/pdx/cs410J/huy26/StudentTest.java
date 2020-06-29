@@ -4,6 +4,7 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
 
@@ -14,12 +15,23 @@ import static org.hamcrest.core.IsEqual.equalTo;
  */
 public class StudentTest
 {
+  private Student createStudentNamed(String name) {
+    return new Student(name, new ArrayList<>(), 0.0, "Doesn't matter");
+  }
 
   @Test
   public void studentNamedPatIsNamedPat() {
     String name = "Pat";
-    var pat = new Student(name, new ArrayList<>(), 0.0, "Doesn't matter");
+    var pat = createStudentNamed(name);
     assertThat(pat.getName(), equalTo(name));
   }
+  @Test
+  public void toStringContainsStudentName() {
+    String name ="Pat";
+    Student pat = createStudentNamed(name);
+    assertThat(pat.toString(), containsString(name));
+  }
+
+
 
 }
