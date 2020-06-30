@@ -39,7 +39,6 @@ public class StudentTest
     assertThat(pat.toString(), containsString("has a GPA of "+gpa));
   }
 
-  @Ignore
   @Test
   public void toStringForExampleInAssignment(){
     Student dave = createDaveStudent();
