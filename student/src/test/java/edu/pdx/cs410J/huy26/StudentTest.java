@@ -80,7 +80,6 @@ public class StudentTest
 
     assertThat(student.toString(), containsString("class: English.  "));
   }
-  @Ignore
   @Test
   public void studentTaking2ClassHasNoComma(){
     ArrayList<String> classes = new ArrayList<>();
