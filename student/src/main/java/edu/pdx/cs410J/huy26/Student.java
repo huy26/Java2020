@@ -45,7 +45,15 @@ public class Student extends Human {
    */                                                                               
   public String toString() {
     int numClasses = this.classes.size();
-    return this.getName() +" has a GPA of " + this.gpa + " and is taking " + numClasses + " class" + (numClasses !=1 ? "es" : "") + (numClasses==0? '.':": ");
+    return this.getName() +" has a GPA of " + this.gpa + " and is taking " + numClasses + " class" + (numClasses !=1 ? "es" : "") + (numClasses==0? '.':": " + listOfclasses() + ".") + "  ";
+  }
+
+  private String listOfclasses() {
+    StringBuilder sb = new StringBuilder();
+    for(String className : this.classes){
+      sb.append(className);
+    }
+    return sb.toString();
   }
 
   /**
