@@ -90,11 +90,10 @@ public class StudentTest
     assertThat(student.toString(), containsString("classes: English and History.  "));
   }
 
-  @Ignore
   @Test
   public void daveToStringHasAllClassName(){
     Student dave = createDaveStudent();
-    assertThat(dave.toString(), containsString("and is taking 3 classes:  Algorithms, Operating Systems, and Java."));
+    assertThat(dave.toString(), containsString("classes: Algorithms, Operating Systems, and Java.  "));
   }
 
   @Test

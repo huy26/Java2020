@@ -53,6 +53,9 @@ public class Student extends Human {
     int numClasses = this.classes.size();
     sb.append(String.join(", ", this.classes.subList(0, numClasses -1)));
     if (numClasses>1) {
+      if (numClasses >2){
+        sb.append(",");
+      }
       sb.append(" and ");
     }
     sb.append(this.classes.get(numClasses -1));
