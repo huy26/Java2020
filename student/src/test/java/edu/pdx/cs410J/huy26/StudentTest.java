@@ -109,4 +109,23 @@ public class StudentTest
     Student student = new Student("Serena", new ArrayList<>(),3.78,"female");
     assertThat(student.toString(), equalTo("Serena has a GPA of 3.78 and is taking 0 classes.  She says \"This class is too much work\"."));
   }
+
+  @Test
+  public void femaleStudentHasShePronoun(){
+    Student female = new Student("her", new ArrayList<>(), 3.78, "female");
+
+    assertThat(female.toString(),containsString("She says"));
+  }
+  @Test
+  public void femaleStudentHasTheyPronoun(){
+    Student female = new Student("Other", new ArrayList<>(), 3.78, "doesn't matter");
+
+    assertThat(female.toString(),containsString("They say"));
+  }
+  @Test
+  public void femaleStudentHasHePronoun(){
+    Student female = new Student("Him", new ArrayList<>(), 3.78, "male");
+
+    assertThat(female.toString(),containsString("He say"));
+  }
 }

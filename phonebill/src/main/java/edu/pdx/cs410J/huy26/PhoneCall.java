@@ -5,34 +5,30 @@ import edu.pdx.cs410J.AbstractPhoneCall;
 import java.util.Date;
 
 public class PhoneCall extends AbstractPhoneCall {
-  private String callername;
-  private String calleename;
-  private String callernumber;
-  private String calleenumber;
-  public  PhoneCall(String callername, String calleename, String callernumber, String calleenumber){
-    this.calleenumber=calleenumber;
-    this.callernumber=callernumber;
-    this.calleename=calleename;
-    this.callername=callername;
-  }
 
-  @Override
-  public String getCaller() {
-    return this.getCaller().toString();
-  }
 
-  @Override
-  public String getCallee() {
-    return this.getCaller().toString();
-  }
+ private final String callee;
+ public PhoneCall(String callee){
+  this.callee=callee;
+ }
 
-  @Override
-  public String getStartTimeString() {
-    return this.getStartTime().toString();
-  }
+ @Override
+ public String getCaller() {
+  return null;
+ }
 
-  @Override
-  public String getEndTimeString() {
-    return this.getEndTime().toString();
-  }
+ @Override
+ public String getCallee() {
+  return this.callee;
+ }
+
+ @Override
+ public String getStartTimeString() {
+  return null;
+ }
+
+ @Override
+ public String getEndTimeString() {
+  return null;
+ }
 }
