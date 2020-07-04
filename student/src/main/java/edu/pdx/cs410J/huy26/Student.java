@@ -11,7 +11,7 @@ public class Student extends Human {
 
   private final double gpa;
   private final ArrayList<String> classes;
-  private final String gender;
+  private final Gender gender;
 
   /**                                                                               
    * Creates a new <code>Student</code>                                             
@@ -28,53 +28,73 @@ public class Student extends Human {
    */                                                                               
   public Student(String name, ArrayList<String> classes, double gpa, String gender) {
     super(name);
+
+    if(name.equals("")){
+      throw new IllegalArgumentException(" Name cannot be empty");
+    }
+
+    if(gpa > 4.0){
+      throw new IllegalArgumentException("GPA cannot be greater than 4.0");
+    }
     this.gpa = gpa;
     this.classes = classes;
-    this.gender =gender;
+    this.gender = Gender.getGenderForString(gender);
   }
 
-  /**                                                                               
-   * All students say "This class is too much work"
-   */
-  @Override
-  public String says() {                                                            
-    throw new UnsupportedOperationException("Not implemented yet");
-  }
-                                                                                    
-  /**                                                                               
-   * Returns a <code>String</code> that describes this                              
-   * <code>Student</code>.                                                          
-   */                                                                               
-  public String toString() {
-    int numClasses = this.classes.size();
-    return this.getName() +" has a GPA of " + this.gpa + " and is taking " + numClasses + " class" + (numClasses !=1 ? "es" : "") + (numClasses==0? '.':": " + listOfClasses() + ".") + "  " + getPronounSays();
-  }
+  enum Gender {
+    FEMALE("She says"), MALE("He says"), OTHER("They say");
 
-  private String getPronounSays(){
-    switch (this.gender){
-      case "female":
-        return "She says";
-      case "male":
-        return "He says";
+    private final String pronounSays;
 
-      default:
-        return "They say";
+    Gender(String pronounSays) {
+      this.pronounSays = pronounSays;
     }
-  }
+
+
+    public static Gender getGenderForString(String genderString) {
+      switch (genderString) {
+        case "female":
+          return Gender.FEMALE;
+        case "male":
+          return Gender.MALE;
+
+        case "other":
+          return Gender.OTHER;
+        default:
+          throw new UnsupportedGenderException(genderString);
+      }
+    }
+
+
+    public String getPronounSays() {
+      return this.pronounSays;
+    }
+  };
+  /**
+   * All students say "This class is too much work" */
+    @Override public String says() {
+      return "This class is too much work";
+    }
+    /**
+   * Returns a <code>String</code> that describes this
+   * * <code>Student</code>.
+   * */
+   public String toString() {
+     int numClasses = this.classes.size();
+     return this.getName() +" has a GPA of " + this.gpa + " and is taking " + numClasses + " class" + (numClasses !=1 ? "es" : "") + (numClasses==0? '.':": " + listOfClasses() + ".") + "  " + this.gender.getPronounSays() + "\"" + this.says() + "\"";
+   }
 
   private String listOfClasses() {
-    StringBuilder sb = new StringBuilder();
-    int numClasses = this.classes.size();
-    sb.append(String.join(", ", this.classes.subList(0, numClasses -1)));
-    if (numClasses>1) {
-      if (numClasses >2){
-        sb.append(",");
-      }
-      sb.append(" and ");
-    }
-    sb.append(this.classes.get(numClasses -1));
-    return sb.toString();
-  }
+     StringBuilder sb = new StringBuilder();
+     int numClasses = this.classes.size();
+     sb.append(String.join(", ", this.classes.subList(0, numClasses -1)));
+     if (numClasses>1) {
+       if (numClasses >2){
+         sb.append(","); }
+       sb.append(" and "); }
+     sb.append(this.classes.get(numClasses -1));
+     return sb.toString();
+   }
 
   /**
    * Main program that parses the command line, creates a
@@ -85,4 +105,5 @@ public class Student extends Human {
     System.err.println("Missing command line arguments");
     System.exit(1);
   }
+
 }
