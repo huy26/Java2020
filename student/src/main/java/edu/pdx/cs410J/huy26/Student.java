@@ -3,7 +3,7 @@ package edu.pdx.cs410J.huy26;
 import edu.pdx.cs410J.lang.Human;
 
 import java.util.ArrayList;
-                                                                                    
+
 /**                                                                                 
  * This class is represents a <code>Student</code>.                                 
  */                                                                                 
@@ -81,7 +81,7 @@ public class Student extends Human {
    * */
    public String toString() {
      int numClasses = this.classes.size();
-     return this.getName() +" has a GPA of " + this.gpa + " and is taking " + numClasses + " class" + (numClasses !=1 ? "es" : "") + (numClasses==0? '.':": " + listOfClasses() + ".") + "  " + this.gender.getPronounSays() + "\"" +  this.says() + "\"";
+     return this.getName() +" has a GPA of " + this.gpa + " and is taking " + numClasses + " class" + (numClasses !=1 ? "es" : "") + (numClasses==0? '.':": " + listOfClasses() + ".") + "  " + this.gender.getPronounSays() + " \"" +  this.says() + "\".";
    }
 
   private String listOfClasses() {
@@ -112,6 +112,14 @@ public class Student extends Human {
       System.err.println("Missing GPA");
       System.exit(1);
     }
+    double gpa =  Double.parseDouble(args[2]);
+    ArrayList<String> classes = new ArrayList<>();
+    for(int i = 3;i<args.length;i++){
+      classes.add(args[i]);
+    }
+
+    Student student = new Student(args[0], classes, gpa,args[1]);
+    System.out.println(student);
     System.exit(0);
 
   }
