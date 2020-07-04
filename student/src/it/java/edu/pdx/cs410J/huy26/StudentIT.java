@@ -57,4 +57,15 @@ public class StudentIT extends InvokeMainTestCase {
     String description = "Dave has a GPA of 3.45 and is taking 3 classes: Algorithms, Operating Systems and Java.  "+"He says "+"\"This class is too much work"+"\".";
     assertThat(result.getTextWrittenToStandardOut(), containsString(description));
   }
+
+  @Test
+  public void unsupportedGenderPrintUnsupportedGenderToStandardError(){
+    String gender = "unsupported";
+    String[] args= {"Name", gender, "3.64"};
+    MainMethodResult result = invokeMain(Student.class, args);
+    assertThat(result.getExitCode(),equalTo(1));
+
+    String error = "Unsupported Gender: " + gender;
+    assertThat(result.getTextWrittenToStandardError(),containsString(error));
+  }
 }
