@@ -25,5 +25,25 @@ public class StudentIT extends InvokeMainTestCase {
     assertThat(result.getTextWrittenToStandardError(), containsString("Missing command line arguments"));
   }
 
+  @Test
+  public void onlyOneArgumentPrintMissingGenderToStandardError(){
+    MainMethodResult result = invokeMain(Student.class, "Name");
+    assertThat(result.getTextWrittenToStandardError(), containsString("Missing gender"));
+    assertThat(result.getExitCode(),equalTo(1));
+  }
 
+  @Test
+  public void onlyTwoArgumentPrintMissingGPAToStandardError(){
+    MainMethodResult result = invokeMain(Student.class, "Name","other");
+    assertThat(result.getTextWrittenToStandardError(), containsString("Missing GPA"));
+    assertThat(result.getExitCode(),equalTo(1));
+  }
+
+  @Test
+  public void studentCanTakeZeroClasses(){
+    MainMethodResult result = invokeMain(Student.class, "Sumit", "other", "3.45");
+//    assertThat(result.getExitCode(),equalTo(0));
+//    String description = "Sumit has a GPA 3.45 and is taking 0 classes.  "+"They say \"This class is too much work\".";
+//    assertThat(result.getTextWrittenToStandardOut(),containsString(description));
+  }
 }
