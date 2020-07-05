@@ -28,5 +28,16 @@ public class Project1IT extends InvokeMainTestCase {
     assertThat(result.getExitCode(), equalTo(1));
     assertThat(result.getTextWrittenToStandardError(), containsString("Missing command line arguments"));
   }
-
+  @Test
+  public void testOneArgument(){
+      MainMethodResult result = invokeMain(Project1.class,"caller");
+      assertThat(result.getExitCode(),equalTo(1));
+      assertThat(result.getTextWrittenToStandardError(),containsString("Missing callee name"));
+  }
+  @Test
+    public void testInvalidNumber(){
+      String args[] = {"caller", "callee", "sdsds", "dasdasd", "starttime", "endtime"};
+      MainMethodResult result = invokeMain(Project1.class,args);
+      assertThat(result.getTextWrittenToStandardError(),containsString("Phone Number must be formatted as nnn-nnn-nnnn"));
+  }
 }
