@@ -36,8 +36,20 @@ public class Project1IT extends InvokeMainTestCase {
   }
   @Test
     public void testInvalidNumber(){
-      String args[] = {"caller", "callee", "sdsds", "dasdasd", "starttime", "endtime"};
+      String args[] = {"caller", "callee", "asasdas", "asdasdasd", "starttime", "endtime"};
       MainMethodResult result = invokeMain(Project1.class,args);
       assertThat(result.getTextWrittenToStandardError(),containsString("Phone Number must be formatted as nnn-nnn-nnnn"));
+  }
+  @Test
+    public void testInvalidDate(){
+      String args[] = {"caller","callee","123-456-1234","123-456-1234","asd", "19:39","asdasd", "1:03"};
+      MainMethodResult result = invokeMain(Project1.class,args);
+      assertThat(result.getTextWrittenToStandardError(),containsString("Date is invalid. Date must be formatted as mm/dd/yyyy"));
+  }
+  @Test
+    public void testInvalidTime(){
+      String args[] = {"caller","callee","123-456-1234","123-456-1234","12/12/2020", "asdasd","12/12/2020", "asdasd"};
+      MainMethodResult result = invokeMain(Project1.class,args);
+      assertThat(result.getTextWrittenToStandardError(),containsString("Time is invalid. Time must be formatted as hh:mm"));
   }
 }
