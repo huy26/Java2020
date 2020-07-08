@@ -20,7 +20,7 @@ public class Project1 {
    */
   public static void main(String[] args) throws IOException {
     // Refer to one of Dave's classes so that we can be sure it is on the classpath
-    //args = new String[]{"-README","Dave", "123-456-7897", "123-456-7845", "11/05/2020", "05:30", "11/05/2020", "05:37"};
+    //args = new String[]{"-README"};
 
     boolean print = false;
     int firstArgPos = 0;
@@ -28,11 +28,11 @@ public class Project1 {
       printErrorMessageAndExit("Missing command line arguments");
     }
     if (args.length > 0) {
-      if (args[0] == "-README") {
+      if (args[0].equals("-README")) {
         InputStream readme = Project1.class.getResourceAsStream("README.txt");
         printREADME(readme);
       }
-      if (args[0] == "-print") {
+      if (args[0].equals("-print")) {
         print = true;
         if(args.length>1)
           firstArgPos =1;
@@ -43,13 +43,13 @@ public class Project1 {
 
     }
     if (args.length > 1) {
-      if (args[1] == "-README") {
+      if (args[1].equals( "-README") ){
         InputStream readme = Project1.class.getResourceAsStream("README.txt");
         printREADME(readme);
       } else if (args.length < 7) {
         printErrorMessageAndExit("Missing argument");
       }
-      if (args[1] == "-print") {
+      if (args[1].equals( "-print")) {
         print = true;
         if(args.length>1)
           firstArgPos =2;
@@ -66,6 +66,9 @@ public class Project1 {
         Pattern phonePattern = Pattern.compile("\\d{3}-\\d{3}-\\d{4}$");
         Matcher matcher1 = phonePattern.matcher(args[i]);
         if (matcher1.matches() == false) {
+              for (String arg : args) {
+                System.out.println(arg);
+              }
           printErrorMessageAndExit("Phone Number must be formatted as nnn-nnn-nnnn");
         }
       } else if (i==firstArgPos+3 || i==firstArgPos+5) {
@@ -88,9 +91,9 @@ public class Project1 {
       System.out.println(call.toString());
     }
 
-    for (String arg : args) {
-      System.out.println(arg);
-    }
+//    for (String arg : args) {
+//      System.out.println(arg);
+//    }
     System.exit(0);
   }
 

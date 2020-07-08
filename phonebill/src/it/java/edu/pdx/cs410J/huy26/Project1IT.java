@@ -17,12 +17,12 @@ import static org.hamcrest.MatcherAssert.assertThat;
  */
 public class Project1IT extends InvokeMainTestCase {
 
-    /**
-     * Invokes the main method of {@link Project1} with the given arguments.
-     */
-    private MainMethodResult invokeMain(String... args) {
-        return invokeMain( Project1.class, args );
-    }
+  /**
+   * Invokes the main method of {@link Project1} with the given arguments.
+   */
+  private MainMethodResult invokeMain(String... args) {
+    return invokeMain(Project1.class, args);
+  }
 
   /**
    * Tests that invoking the main method with no arguments issues an error
@@ -41,7 +41,7 @@ public class Project1IT extends InvokeMainTestCase {
   }
   @Test
     public void testInvalidNumber(){
-      String args[] = {"caller", "asasdas", "asdasdasd", "starttime","asdasdasd", "endtime","asdasdasd"};
+      String args[] = {"caller", "asasdas", "asdasdasd", "starttime","asdasdasd", "endtime","656556565"};
       MainMethodResult result = invokeMain(Project1.class,args);
       assertThat(result.getExitCode(), equalTo(1));
       assertThat(result.getTextWrittenToStandardError(),containsString("Phone Number must be formatted as nnn-nnn-nnnn"));
@@ -63,12 +63,13 @@ public class Project1IT extends InvokeMainTestCase {
       assertThat(result.getTextWrittenToStandardError(),containsString("Time is invalid. Time must be formatted as hh:mm"));
   }
   @Test
-  public void readMeIsTheFirstOption(){
+  public void readMeIsTheFirstOption() {
     String args[] = {"-README"};
-    MainMethodResult result = invokeMain(Project1.class,args);
-    assertThat(result.getExitCode(),equalTo(0));
-    assertThat(result.getTextWrittenToStandardOut(),containsString("This is a README file!"));
+    MainMethodResult result = invokeMain(Project1.class, args);
+    assertThat(result.getExitCode(), equalTo(0));
+    assertThat(result.getTextWrittenToStandardOut(), containsString("This is a README file!"));
   }
+
   @Test
   public void readMeIsTheSecondOption(){
     String args[] = {"-print","-README"};
@@ -94,10 +95,10 @@ public class Project1IT extends InvokeMainTestCase {
   }
 
   @Test
-  public void daveExampleFromAssignment(){
-    String[] args = {"-print","caller","123-456-1234","123-456-1234","12/12/2020", "5:27","12/12/2020","5:30"};
+  public void exampleFromAssignment(){
+    String[] args = {"-print","Dave","123-456-7897","123-456-7895","12/12/2020", "5:27","12/12/2020","5:30"};
     MainMethodResult result = invokeMain(Project1.class, args);
-    String description = "Phone call from 123-456-1234 to 123-456-1234 from 12/12/2020 5:27 to 12/12/2020 5:30";
+    String description = "Phone call from 123-456-7897 to 123-456-7895 from 12/12/2020 5:27 to 12/12/2020 5:30";
     assertThat(result.getTextWrittenToStandardOut(), StringContains.containsString(description));
   }
 }
