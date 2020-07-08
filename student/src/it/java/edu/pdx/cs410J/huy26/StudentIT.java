@@ -49,7 +49,6 @@ public class StudentIT extends InvokeMainTestCase {
     assertThat(result.getTextWrittenToStandardOut(),containsString(description));
   }
 
-  @Ignore
   @Test
   public void daveExampleFromAssignment(){
     String[] args = {"Dave", "male", "3.64", "Algorithms", "Operating Systems", "Java"};

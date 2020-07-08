@@ -1,5 +1,6 @@
 package edu.pdx.cs410J.huy26;
 
+import edu.pdx.cs410J.InvokeMainTestCase;
 import org.junit.Test;
 
 import java.io.BufferedReader;
