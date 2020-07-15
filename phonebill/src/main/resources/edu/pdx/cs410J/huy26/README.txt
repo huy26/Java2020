@@ -8,3 +8,6 @@ And print the description of input if option -print is present.
 -README option would print README file and stop the program.
 By using the option -textFile file, the program will read the Phone Bill from the file,
 add he Phone Call from arguments to Phone Bill and write a new Phone Call to text file.
+The text file must be formatted as:
+customerName
+callerNumber calleeNumber startDate startTime endDate endTime
