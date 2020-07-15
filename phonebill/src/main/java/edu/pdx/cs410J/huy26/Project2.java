@@ -23,6 +23,7 @@ public class Project2 {
     // Refer to one of Dave's classes so that we can be sure it is on the classpath
     //args = new String[]{"-print"};
     boolean print = false;
+    boolean textFileAvailable = false;
     PhoneBill phoneBill;
     int firstArgPos = 0;
     String path = "";
@@ -60,6 +61,7 @@ public class Project2 {
             path=args[i+1]+".txt";
             firstArgPos +=2;
             i++;
+            textFileAvailable=true;
           }
         }
         else {
@@ -102,25 +104,29 @@ public class Project2 {
     if(print){
       System.out.println(call.toString());
     }
-    File file=new File(path);
-    TextParser parser = new TextParser(file,args,firstArgPos);
-    phoneBill = parser.parse();
     //args = new String[]{"customer", "123-456-7897", "123-456-7895", "12/12/2020", "5:27", "12/12/2020", "5:30"};
 
-
-    ArrayList<PhoneCall> phoneCalls = (ArrayList<PhoneCall>) phoneBill.getPhoneCalls();
+    if(textFileAvailable){
+      File file = new File(path);
+      TextParser parser=new TextParser(file,args,firstArgPos);
+      parser.parse();
+    }
     System.exit(0);
   }
 
   /**
    * Print error message and exit the program
-   *
    */
   @VisibleForTesting
   static void printErrorMessageAndExit(String message) {
     System.err.println(message);
     System.exit(1);
   }
+
+  /**
+   * Print README and exit the program
+   */
+
   public static void printREADME(InputStream readme) throws IOException {
     BufferedReader reader = new BufferedReader(new InputStreamReader(readme));
     try {

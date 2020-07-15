@@ -9,19 +9,27 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
+/**
+ * This class represents a <code>TextDumper</code>
+ */
 public class TextDumper implements PhoneBillDumper {
     private final File file;
+
+    /**
+     * Creates a new <code>TextDumper</code>
+     *
+     * @param file Path directory to the text file.
+     */
 
     public TextDumper(File file) {
         this.file = file;
     }
 
+    /**
+     *The function dump the PhoneBill to the text file.
+     */
     @Override
     public void dump(AbstractPhoneBill bill) throws IOException {
-        writeTextFile(file, (PhoneBill) bill);
-    }
-
-    public void writeTextFile(File file, PhoneBill bill) throws IOException {
         try {
             FileWriter writer = new FileWriter(file);
             PrintWriter printWriter = new PrintWriter(writer);

@@ -16,7 +16,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class TestParserTest {
+public class TextParserTest {
     @Test
     public void testParserFunction() throws IOException, ParserException {
         File file=new File("test.txt");
@@ -28,5 +28,15 @@ public class TestParserTest {
         Scanner scanner = new Scanner(file);
         String customerName=scanner.nextLine();
         assertEquals(customerName.equals(bill.getCustomer()),true);
+    }
+    @Test
+    public void returnPhoneBill() throws IOException, ParserException {
+        File file=new File("test.txt");
+        PhoneBill bill=new PhoneBill("",new ArrayList<PhoneCall>());
+        String args[]= new String[]{"-textFile","test","customer","123-456-7897","123-456-7898","11/5/2020","5:30","11/5/2020","5:37"};
+        Integer firstPosition = 2;
+        TextParser parser = new TextParser(file,args,firstPosition);
+        Integer count = parser.parse().getPhoneCalls().size();
+        assertEquals(parser.parse().getPhoneCalls().size(),count+1);
     }
 }

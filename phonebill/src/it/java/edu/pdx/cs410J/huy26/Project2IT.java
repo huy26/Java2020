@@ -118,8 +118,8 @@ public class Project2IT extends InvokeMainTestCase {
 //    PhoneBill bill = new PhoneBill("",new ArrayList<PhoneCall>());
     String [] args = new String[]{"-textFile","test","Dave","123-456-7897","123-456-7895","11/5/2020","5:20","11/5/2020","5:30"};
     MainMethodResult result = invokeMain(Project2.class,args);
-    assertThat(result.getExitCode(),equalTo(1));
     assertThat(result.getTextWrittenToStandardError(),containsString("Customer name does not match the file"));
+    assertThat(result.getExitCode(),equalTo(1));
   }
   @Test
   public void testTextFileAndPrint() throws IOException {
@@ -143,5 +143,19 @@ public class Project2IT extends InvokeMainTestCase {
     MainMethodResult result = invokeMain(Project2.class, args);
     String description = "Phone call from 123-456-7897 to 123-456-7895 from 12/12/2020 5:27 to 12/12/2020 5:30";
     assertThat(result.getTextWrittenToStandardOut(), StringContains.containsString(description));
+  }
+  @Test
+  public void testMissingArgument() throws IOException {
+    String [] args = new String[]{"-textFile","test2","customer","123-456-7897","123-456-7895","11/5/2020","5:20","11/5/2020","5:30"};
+    MainMethodResult result = invokeMain(Project2.class,args);
+    assertThat(result.getTextWrittenToStandardError(),containsString("Missing argument in text file"));
+    assertThat(result.getExitCode(),equalTo(1));
+  }
+  @Test
+  public void testRedundantArgument() throws IOException {
+    String [] args = new String[]{"-textFile","test1","customer","123-456-7897","123-456-7895","11/5/2020","5:20","11/5/2020","5:30"};
+    MainMethodResult result = invokeMain(Project2.class,args);
+    assertThat(result.getTextWrittenToStandardError(),containsString("Redundant argument in text file"));
+    assertThat(result.getExitCode(),equalTo(1));
   }
 }

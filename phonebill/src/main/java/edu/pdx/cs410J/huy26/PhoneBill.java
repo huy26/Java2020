@@ -14,6 +14,7 @@ public class PhoneBill extends AbstractPhoneBill<PhoneCall> {
     private ArrayList<PhoneCall> phoneCalls;
 
     /**
+     * Creates a new <code>PhoneBill</code>
      *
      * @param customer
      *        The customer's name
