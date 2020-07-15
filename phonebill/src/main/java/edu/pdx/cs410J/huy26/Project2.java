@@ -1,6 +1,7 @@
 package edu.pdx.cs410J.huy26;
 
 import com.google.common.annotations.VisibleForTesting;
+import edu.pdx.cs410J.ParserException;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -10,7 +11,7 @@ import java.util.regex.Pattern;
 /**
  * The main class for the CS410J Phone Bill Project
  */
-public class Project1 {
+public class Project2 {
 
 
   /**
@@ -18,48 +19,58 @@ public class Project1 {
    * <code>PhoneCall</code>, and prints a description of the new phone call to
    * standard out by invoking its <code>toString</code> method.
    */
-  public static void main(String[] args) throws IOException {
+  public static void main(String[] args) throws IOException, ParserException {
     // Refer to one of Dave's classes so that we can be sure it is on the classpath
-    //args = new String[]{"-README"};
-
+    //args = new String[]{"-print"};
     boolean print = false;
+    PhoneBill phoneBill;
     int firstArgPos = 0;
+    String path = "";
+
     if(args.length==0){
       printErrorMessageAndExit("Missing command line arguments");
     }
-    if (args.length > 0) {
-      if (args[0].equals("-README")) {
-        InputStream readme = Project1.class.getResourceAsStream("README.txt");
-        printREADME(readme);
-      }
-      if (args[0].equals("-print")) {
-        print = true;
-        if(args.length>1)
-          firstArgPos =1;
-        else {
-          printErrorMessageAndExit("Missing argument");
-        }
-      }
-
+    if (args.length == 1) {
+      if(args[0].equals("-README")==false)
+        printErrorMessageAndExit("Missing command line arguments");
     }
     if (args.length > 1) {
       if (args[1].equals( "-README") ){
-        InputStream readme = Project1.class.getResourceAsStream("README.txt");
+        InputStream readme = Project2.class.getResourceAsStream("README.txt");
         printREADME(readme);
       } else if (args.length < 7) {
-        printErrorMessageAndExit("Missing argument");
+        printErrorMessageAndExit("Missing command line arguments");
       }
-      if (args[1].equals( "-print")) {
-        print = true;
-        if(args.length>1)
-          firstArgPos =2;
+    }
+    Pattern optionPattern = Pattern.compile("^-.*");
+    for(int i=0;i<4;i++){
+      Matcher matcher = optionPattern.matcher(args[i]);
+      if(matcher.matches()==true){
+        if(args[i].equals("-print")||args[i].equals("-README")||args[i].equals("-textFile")){
+          if (args[i].equals("-README")){
+            InputStream readme = Project2.class.getResourceAsStream("README.txt");
+            printREADME(readme);
+            firstArgPos++;
+          }
+          else if(args[i].equals("-print")){
+            print=true;
+            firstArgPos++;
+          }
+          else if (args[i].equals("-textFile")){
+            path=args[i+1]+".txt";
+            firstArgPos +=2;
+            i++;
+          }
+        }
         else {
-          printErrorMessageAndExit("Missing argument");
+          printErrorMessageAndExit("Unknown command line option");
         }
       }
     }
     if(firstArgPos +6>=args.length){
-      printErrorMessageAndExit("Missing argument");
+      printErrorMessageAndExit("Missing command line arguments");
+    } else if(firstArgPos+7<args.length){
+      printErrorMessageAndExit("Unknown command line argument");
     }
     for (int i = firstArgPos; i < args.length; i++) {
       if (i==firstArgPos+1 || i==firstArgPos+2) {
@@ -86,14 +97,18 @@ public class Project1 {
         }
       }
     }
+
     PhoneCall call = new PhoneCall(args[firstArgPos+1],args[firstArgPos+2],args[firstArgPos+3]+" "+args[firstArgPos+4],args[firstArgPos+5]+" "+args[firstArgPos+6]);
     if(print){
       System.out.println(call.toString());
     }
+    File file=new File(path);
+    TextParser parser = new TextParser(file,args,firstArgPos);
+    phoneBill = parser.parse();
+    //args = new String[]{"customer", "123-456-7897", "123-456-7895", "12/12/2020", "5:27", "12/12/2020", "5:30"};
 
-//    for (String arg : args) {
-//      System.out.println(arg);
-//    }
+
+    ArrayList<PhoneCall> phoneCalls = (ArrayList<PhoneCall>) phoneBill.getPhoneCalls();
     System.exit(0);
   }
 
@@ -106,27 +121,20 @@ public class Project1 {
     System.err.println(message);
     System.exit(1);
   }
-
-  /**
-   *
-   * Print README if -README option is present and exit the program
-   */
   public static void printREADME(InputStream readme) throws IOException {
     BufferedReader reader = new BufferedReader(new InputStreamReader(readme));
     try {
-      while (reader.ready()){
+      while (reader.ready()) {
         System.out.println(reader.readLine());
       }
-    } catch (IOException ex){
+    } catch (IOException ex) {
       System.err.println(ex);
       throw ex;
-    }finally {
-      if (reader!=null){
+    } finally {
+      if (reader != null) {
         reader.close();
       }
     }
     System.exit(0);
-
   }
-
 }

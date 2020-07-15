@@ -26,13 +26,14 @@ public class PhoneBill extends AbstractPhoneBill<PhoneCall> {
         this.phoneCalls = phoneCalls;
     }
 
+
     @Override
     public String getCustomer() {
         return this.customer;
     }
 
     @Override
-    public void addPhoneCall(PhoneCall call) { }
+    public void addPhoneCall(PhoneCall call) { phoneCalls.add(call); }
 
     @Override
     public Collection<PhoneCall> getPhoneCalls() {

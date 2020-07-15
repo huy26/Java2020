@@ -1,6 +1,5 @@
 package edu.pdx.cs410J.huy26;
 
-import edu.pdx.cs410J.InvokeMainTestCase;
 import org.junit.Test;
 
 import java.io.BufferedReader;
@@ -12,16 +11,16 @@ import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
- * A unit test for code in the <code>Project1</code> class.  This is different
- * from <code>Project1IT</code> which is an integration test (and can handle the calls
+ * A unit test for code in the <code>Project2</code> class.  This is different
+ * from <code>Project2IT</code> which is an integration test (and can handle the calls
  * to {@link System#exit(int)} and the like.
  */
-public class Project1Test {
+public class Project2Test {
 
   @Test
   public void readmeCanBeReadAsResource() throws IOException {
     try (
-      InputStream readme = Project1.class.getResourceAsStream("README.txt");
+            InputStream readme = Project2.class.getResourceAsStream("README.txt");
     ) {
       assertThat(readme, not(nullValue()));
       BufferedReader reader = new BufferedReader(new InputStreamReader(readme));
