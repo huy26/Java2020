@@ -93,6 +93,14 @@ public class TextParser implements PhoneBillParser<PhoneBill> {
                         String callee = tokens[1];
                         String start = tokens[2]+ " " + tokens[3];
                         String end = tokens[4] + " " + tokens[5];
+                        if(!caller.matches("\\d{3}-\\d{3}-\\d{4}$")||!callee.matches("\\d{3}-\\d{3}-\\d{4}$")){
+                            System.err.println("Phone number from file is invalid");
+                            System.exit(1);
+                        }
+                        if(!start.matches("\\d{1,2}/\\d{1,2}/\\d{4} \\d{1,2}:\\d{1,2}$")|| !end.matches("\\d{1,2}/\\d{1,2}/\\d{4} \\d{1,2}:\\d{1,2}$")){
+                            System.err.println("Date or Time is invalid format");
+                            System.exit(1);
+                        }
                         PhoneCall call = new PhoneCall(caller, callee, start, end);
                         bill.addPhoneCall(call);
                     }
