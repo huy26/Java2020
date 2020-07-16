@@ -3,6 +3,7 @@ package edu.pdx.cs410J.huy26;
 import com.google.common.annotations.VisibleForTesting;
 import edu.pdx.cs410J.ParserException;
 
+import java.io.File;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
@@ -27,7 +28,7 @@ public class Project2 {
     PhoneBill phoneBill;
     int firstArgPos = 0;
     String path = "";
-
+    String fileName ="";
     if(args.length==0){
       printErrorMessageAndExit("Missing command line arguments");
     }
@@ -35,6 +36,7 @@ public class Project2 {
       if(args[0].equals("-README")==false)
         printErrorMessageAndExit("Missing command line arguments");
     }
+
     if (args.length > 1) {
       if (args[1].equals( "-README") ){
         InputStream readme = Project2.class.getResourceAsStream("README.txt");
@@ -58,7 +60,14 @@ public class Project2 {
             firstArgPos++;
           }
           else if (args[i].equals("-textFile")){
-            path=args[i+1]+".txt";
+            String [] tokens = args[i+1].split("/");
+            path=System.getProperty("user.dir");
+            for(int j=0;j<tokens.length-1;j++){
+              path=path + "/"+tokens[i];
+            }
+            fileName=tokens[tokens.length-1];
+            if(!fileName.matches(".*.txt$"))
+              fileName+=".txt";
             firstArgPos +=2;
             i++;
             textFileAvailable=true;
@@ -101,15 +110,20 @@ public class Project2 {
     }
 
     PhoneCall call = new PhoneCall(args[firstArgPos+1],args[firstArgPos+2],args[firstArgPos+3]+" "+args[firstArgPos+4],args[firstArgPos+5]+" "+args[firstArgPos+6]);
-    if(print){
-      System.out.println(call.toString());
-    }
-    //args = new String[]{"customer", "123-456-7897", "123-456-7895", "12/12/2020", "5:27", "12/12/2020", "5:30"};
 
+    //args = new String[]{"customer", "123-456-7897", "123-456-7895", "12/12/2020", "5:27", "12/12/2020", "5:30"};
     if(textFileAvailable){
       File file = new File(path);
+      if(!file.exists()){
+        file.mkdir();
+      }
+      path=path+"/"+fileName;
+      file=new File(path);
       TextParser parser=new TextParser(file,args,firstArgPos);
       parser.parse();
+    }
+    if(print){
+      System.out.println(call.toString());
     }
     System.exit(0);
   }

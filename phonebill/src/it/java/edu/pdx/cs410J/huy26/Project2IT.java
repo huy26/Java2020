@@ -163,4 +163,26 @@ public class Project2IT extends InvokeMainTestCase {
     assertThat(result.getTextWrittenToStandardError(),containsString("Redundant argument in text file"));
     assertThat(result.getExitCode(),equalTo(1));
   }
+
+  @Test
+  public void testDirectory() throws IOException {
+    String [] args = new String[]{"-textFile","huy26","-print", "Project2","123-456-7897","123-456-7895","11/5/2020","5:20","11/5/2020","5:30"};
+    MainMethodResult result = invokeMain(Project2.class,args);
+    assertThat(result.getTextWrittenToStandardOut(),containsString("Phone call from 123-456-7897 to 123-456-7895 from 11/5/2020 5:20 to 11/5/2020 5:30"));
+    assertThat(result.getExitCode(),equalTo(0));
+  }
+  @Test
+  public void testDirectory2() throws IOException {
+    String [] args = new String[]{"-textFile","huy26/huy26","-print", "Project2","123-456-7897","123-456-7895","11/5/2020","5:20","11/5/2020","5:30"};
+    MainMethodResult result = invokeMain(Project2.class,args);
+    assertThat(result.getTextWrittenToStandardOut(),containsString("Phone call from 123-456-7897 to 123-456-7895 from 11/5/2020 5:20 to 11/5/2020 5:30"));
+    assertThat(result.getExitCode(),equalTo(0));
+  }
+  @Test
+  public void testDirectory3() throws IOException {
+    String [] args = new String[]{"-textFile","huy26/huy26.txt","-print", "Project2","123-456-7897","123-456-7895","11/5/2020","5:20","11/5/2020","5:30"};
+    MainMethodResult result = invokeMain(Project2.class,args);
+    assertThat(result.getTextWrittenToStandardOut(),containsString("Phone call from 123-456-7897 to 123-456-7895 from 11/5/2020 5:20 to 11/5/2020 5:30"));
+    assertThat(result.getExitCode(),equalTo(0));
+  }
 }
