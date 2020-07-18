@@ -187,7 +187,6 @@ public class Project2IT extends InvokeMainTestCase {
     assertThat(result.getTextWrittenToStandardOut(),containsString("Phone call from 123-456-7897 to 123-456-7895 from 11/5/2020 5:20 to 11/5/2020 5:30"));
     assertThat(result.getExitCode(),equalTo(0));
   }
-  @Ignore
   @Test
   public void invalidDateTimeFile() throws IOException {
     String [] args = new String[]{"-textFile","huy26/test.txt","-print", "Project2","123-456-7897","123-456-7895","11/5/2020","5:20","11/5/2020","5:30"};
