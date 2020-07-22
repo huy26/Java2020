@@ -22,6 +22,6 @@ public class PrettyPrinterTest {
         prettyPrinter.dump(bill);
         Scanner scanner = new Scanner(new File("pretty.txt"));
         String customerName=scanner.nextLine();
-        assertEquals(customerName.equals(bill.getCustomer()),true);
+        assertEquals(customerName.equals("Customer: "+bill.getCustomer()),true);
     }
 }

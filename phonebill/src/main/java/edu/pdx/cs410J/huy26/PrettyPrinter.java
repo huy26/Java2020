@@ -34,7 +34,7 @@ public class PrettyPrinter implements PhoneBillDumper {
         try {
             FileWriter writer = new FileWriter(file);
             PrintWriter printWriter = new PrintWriter(writer);
-            printWriter.println(bill.getCustomer());
+            printWriter.println("Customer: "+bill.getCustomer());
             TreeSet<PhoneCall> phoneCalls = (TreeSet<PhoneCall>) bill.getPhoneCalls();
             for (PhoneCall itr:phoneCalls) {
                 printWriter.print("Phone call from "+itr.getCaller()+" ");

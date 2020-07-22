@@ -159,7 +159,7 @@ public class Project3 {
         System.out.println(call.toString());
       }
       if(printPretty){
-        System.out.println(phoneBill.getCustomer());
+        System.out.println("Customer: "+phoneBill.getCustomer());
         TreeSet<PhoneCall> phoneCalls = (TreeSet<PhoneCall>) phoneBill.getPhoneCalls();
         for (PhoneCall itr:phoneCalls) {
           System.out.print("Phone call from "+itr.getCaller()+" ");
