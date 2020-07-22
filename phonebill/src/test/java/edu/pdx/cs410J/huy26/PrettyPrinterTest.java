@@ -11,16 +11,16 @@ import java.util.TreeSet;
 
 import static org.junit.Assert.assertEquals;
 
-public class TextDumperTest {
+public class PrettyPrinterTest {
     @Test
-    public void testDumperFunction() throws IOException {
-        TextDumper dumper = new TextDumper(new File("test.txt"));
+    public void testPrettyFunction() throws IOException {
+        PrettyPrinter prettyPrinter = new PrettyPrinter(new File("pretty.txt"));
         ArrayList<PhoneCall> phoneCalls=new ArrayList<PhoneCall>();
-        PhoneCall call=new PhoneCall("123-456-5468","123-456-7542","11/05/1999 5:30","11/05/1999 5:37");
+        PhoneCall call=new PhoneCall("123-456-5468","123-456-7542","11/05/1999 5:30 pm","11/05/1999 5:37 pm");
         PhoneBill bill = new PhoneBill("customer",new TreeSet<PhoneCall>());
         phoneCalls.add(call);
-        dumper.dump(bill);
-        Scanner scanner = new Scanner(new File("test.txt"));
+        prettyPrinter.dump(bill);
+        Scanner scanner = new Scanner(new File("pretty.txt"));
         String customerName=scanner.nextLine();
         assertEquals(customerName.equals(bill.getCustomer()),true);
     }

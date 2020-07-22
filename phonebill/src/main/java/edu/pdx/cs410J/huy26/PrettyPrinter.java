@@ -7,28 +7,27 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Iterator;
+import java.time.Duration;
 import java.util.TreeSet;
 
 /**
- * This class represents a <code>TextDumper</code>
+ * This class represents a <code>PrettyPrinter</code>
  */
-public class TextDumper implements PhoneBillDumper {
+public class PrettyPrinter implements PhoneBillDumper {
     private final File file;
 
     /**
-     * Creates a new <code>TextDumper</code>
+     * Creates a new <code>PrettyPrinter</code>
      *
-     * @param file Path directory to the text file.
+     * @param file Path directory to the pretty text file.
      */
 
-    public TextDumper(File file) {
+    public PrettyPrinter(File file) {
         this.file = file;
     }
 
     /**
-     *The function dump the PhoneBill to the text file.
+     *The function dump the PhoneBill in formal textual presentation format to the pretty text file.
      */
     @Override
     public void dump(AbstractPhoneBill bill) throws IOException {
@@ -38,10 +37,13 @@ public class TextDumper implements PhoneBillDumper {
             printWriter.println(bill.getCustomer());
             TreeSet<PhoneCall> phoneCalls = (TreeSet<PhoneCall>) bill.getPhoneCalls();
             for (PhoneCall itr:phoneCalls) {
-                printWriter.print(itr.getCaller()+" ");
-                printWriter.print(itr.getCallee() + " ");
-                printWriter.print(itr.getNormalStartString() + " ");
-                printWriter.println(itr.getNormalEndString());
+                printWriter.print("Phone call from "+itr.getCaller()+" ");
+                printWriter.print("to "+itr.getCallee() + " ");
+                printWriter.print("from " +itr.getStartTimeString() + " ");
+                printWriter.print("to "+itr.getEndTimeString()+ ". ");
+                long diff = itr.getEndTime().getTime() - itr.getStartTime().getTime();
+                long diffMinutes = diff / (60 * 1000) % 60;
+                printWriter.println("Duration: "+ diffMinutes + " minutes");
             }
             printWriter.close();
 

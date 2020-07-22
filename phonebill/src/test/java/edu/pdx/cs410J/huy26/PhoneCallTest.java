@@ -3,6 +3,7 @@ package edu.pdx.cs410J.huy26;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -52,15 +53,15 @@ public class PhoneCallTest {
 
   @Test
   public void initiallyStartTime(){
-    String start="starttime";
+    String start = "5/11/1999 5:30 pm";
     PhoneCall call = new PhoneCall("caller", "callee", start, "endtime");
-    assertThat(call.getStartTimeString(), equalTo(start));
+    assertThat(call.getStartTimeString(), equalTo("5/11/99, 5:30 PM"));
   }
   @Test
   public void initiallyEndTime(){
-    String end="endtime";
+    String end="5/11/1999 5:12 pm";
     PhoneCall call = new PhoneCall("caller", "callee", "start", end);
-    assertThat(call.getEndTimeString(), equalTo(end));
+    assertThat(call.getEndTimeString(), equalTo("5/11/99, 5:12 PM"));
   }
   @Test
   public void callerAndCalleeCannotBeTheSame(){

@@ -5,14 +5,14 @@ import edu.pdx.cs410J.ParserException;
 
 import java.io.File;
 import java.io.*;
-import java.util.ArrayList;
+import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
  * The main class for the CS410J Phone Bill Project
  */
-public class Project2 {
+public class Project3 {
 
 
   /**
@@ -25,10 +25,15 @@ public class Project2 {
     //args = new String[]{"-print"};
     boolean print = false;
     boolean textFileAvailable = false;
-    PhoneBill phoneBill;
+    boolean prettyFileAvailable=false;
+    boolean printPretty =false;
+    PhoneBill phoneBill = null;
     int firstArgPos = 0;
     String path = "";
     String fileName ="";
+
+    String prettyPath = "";
+    String prettyFileName ="";
     if(args.length==0){
       printErrorMessageAndExit("Missing command line arguments");
     }
@@ -39,19 +44,19 @@ public class Project2 {
 
     if (args.length > 1) {
       if (args[1].equals( "-README") ){
-        InputStream readme = Project2.class.getResourceAsStream("README.txt");
+        InputStream readme = Project3.class.getResourceAsStream("README.txt");
         printREADME(readme);
       } else if (args.length < 7) {
         printErrorMessageAndExit("Missing command line arguments");
       }
     }
     Pattern optionPattern = Pattern.compile("^-.*");
-    for(int i=0;i<4;i++){
+    for(int i=0;i<6;i++){
       Matcher matcher = optionPattern.matcher(args[i]);
       if(matcher.matches()==true){
-        if(args[i].equals("-print")||args[i].equals("-README")||args[i].equals("-textFile")){
+        if(args[i].equals("-print")||args[i].equals("-README")||args[i].equals("-textFile")||args[i].equals("-pretty")){
           if (args[i].equals("-README")){
-            InputStream readme = Project2.class.getResourceAsStream("README.txt");
+            InputStream readme = Project3.class.getResourceAsStream("README.txt");
             printREADME(readme);
             firstArgPos++;
           }
@@ -72,15 +77,34 @@ public class Project2 {
             i++;
             textFileAvailable=true;
           }
+          else if(args[i].equals("-pretty")){
+            if(args[i+1].equals("-")){
+              printPretty=true;
+              firstArgPos+=2;
+              i++;
+            }else {
+              String[] tokens = args[i + 1].split("/");
+              prettyPath = System.getProperty("user.dir");
+              for (int j = 0; j < tokens.length - 1; j++) {
+                prettyPath = prettyPath + "/" + tokens[i];
+              }
+              prettyFileName = tokens[tokens.length - 1];
+              if (!prettyFileName.matches(".*.txt$"))
+                prettyFileName += ".txt";
+              firstArgPos += 2;
+              i++;
+              prettyFileAvailable =true;
+            }
+          }
         }
         else {
           printErrorMessageAndExit("Unknown command line option");
         }
       }
     }
-    if(firstArgPos +6>=args.length){
+    if(firstArgPos +8>=args.length){
       printErrorMessageAndExit("Missing command line arguments");
-    } else if(firstArgPos+7<args.length){
+    } else if(firstArgPos+9<args.length){
       printErrorMessageAndExit("Unknown command line argument");
     }
     for (int i = firstArgPos; i < args.length; i++) {
@@ -88,43 +112,86 @@ public class Project2 {
         Pattern phonePattern = Pattern.compile("\\d{3}-\\d{3}-\\d{4}$");
         Matcher matcher1 = phonePattern.matcher(args[i]);
         if (matcher1.matches() == false) {
-              for (String arg : args) {
-                System.out.println(arg);
-              }
           printErrorMessageAndExit("Phone Number must be formatted as nnn-nnn-nnnn");
         }
-      } else if (i==firstArgPos+3 || i==firstArgPos+5) {
+      } else if (i==firstArgPos+3 || i==firstArgPos+6) {
         Pattern datePattern = Pattern.compile("\\d{1,2}/\\d{1,2}/\\d{4}$");
         Matcher matcher2 = datePattern.matcher(args[i]);
         if (matcher2.matches() == false) {
           String message = "Date is invalid. Date must be formatted as mm/dd/yyyy";
           printErrorMessageAndExit(message);
         }
-      }else if(i==firstArgPos+4 || i==firstArgPos+6){
+      }else if(i==firstArgPos+4 || i==firstArgPos+7){
         Pattern timePattern = Pattern.compile("\\d{1,2}:\\d{1,2}$");
         Matcher matcher3 = timePattern.matcher(args[i]);
         if (matcher3.matches() == false ) {
           printErrorMessageAndExit("Time is invalid. Time must be formatted as hh:mm");
         }
+      }else if(i==firstArgPos+5||i==firstArgPos+8){
+        if (!args[i].equals("AM")&&!args[i].equals("PM")&&!args[i].equals("am")&&!args[i].equals("pm")){
+          printErrorMessageAndExit("AM/PM time designation is invalid.");
+        }
       }
     }
 
-    PhoneCall call = new PhoneCall(args[firstArgPos+1],args[firstArgPos+2],args[firstArgPos+3]+" "+args[firstArgPos+4],args[firstArgPos+5]+" "+args[firstArgPos+6]);
+    PhoneCall call = new PhoneCall(args[firstArgPos+1],args[firstArgPos+2],args[firstArgPos+3]+" "+args[firstArgPos+4] + " "+args[firstArgPos+5],args[firstArgPos+6]+" "+args[firstArgPos+7] +" "+args[firstArgPos +8]);
 
     //args = new String[]{"customer", "123-456-7897", "123-456-7895", "12/12/2020", "5:27", "12/12/2020", "5:30"};
-    if(textFileAvailable){
-      File file = new File(path);
-      if(!file.exists()){
-        file.mkdir();
+      File fileText = new File(path);
+      if(textFileAvailable) {
+        if (!fileText.exists()) {
+          fileText.mkdir();
+        }
+        path = path + "/" + fileName;
+        fileText = new File(path);
       }
-      path=path+"/"+fileName;
-      file=new File(path);
-      TextParser parser=new TextParser(file,args,firstArgPos);
-      parser.parse();
-    }
-    if(print){
-      System.out.println(call.toString());
-    }
+      File prettyFile = new File(prettyPath);
+      if (prettyFileAvailable){
+        if (!prettyFile.exists()){
+          prettyFile.mkdir();
+        }
+        prettyPath+="/"+prettyFileName;
+        prettyFile = new File(prettyPath);
+      }
+      TextParser parser=new TextParser(fileText, prettyFile, args,firstArgPos,textFileAvailable,prettyFileAvailable);
+      phoneBill = parser.parse();
+      if(print){
+        System.out.println(call.toString());
+      }
+      if(printPretty){
+        System.out.println(phoneBill.getCustomer());
+        TreeSet<PhoneCall> phoneCalls = (TreeSet<PhoneCall>) phoneBill.getPhoneCalls();
+        for (PhoneCall itr:phoneCalls) {
+          System.out.print("Phone call from "+itr.getCaller()+" ");
+          System.out.print("to "+itr.getCallee() + " ");
+          System.out.print("from " +itr.getStartTimeString() + " ");
+          System.out.print("to "+itr.getEndTimeString()+ ". ");
+          long diff = itr.getEndTime().getTime() - itr.getStartTime().getTime();
+          long diffMinutes = diff / (60 * 1000) % 60;
+          System.out.println("Duration: "+ diffMinutes + " minutes");
+        }
+      }
+
+
+//    if(prettyFileAvailable){
+//      File file1 = new File(prettyPath);
+//      if(!file1.exists()){
+//        file1.mkdir();
+//      }
+//      prettyPath=prettyPath+"/"+prettyFileName;
+//      file1=new File(prettyPath);
+//      PrettyPrinter prettyPrinter=new PrettyPrinter(file1);
+//      prettyPrinter.dump(phoneBill);
+//    }
+//    else if (printPretty){
+//      System.out.println(phoneBill.getCustomer());
+//      TreeSet<PhoneCall> phoneCalls = (TreeSet<PhoneCall>) phoneBill.getPhoneCalls();
+//      for (PhoneCall itr:phoneCalls) {
+//        System.out.println(itr.toString());
+//      }
+//    }
+
+
     System.exit(0);
   }
 

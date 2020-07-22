@@ -1,32 +1,36 @@
 package edu.pdx.cs410J.huy26;
 
-import edu.pdx.cs410J.AbstractPhoneBill;
 import edu.pdx.cs410J.ParserException;
 import edu.pdx.cs410J.PhoneBillParser;
 
 import java.io.*;
-import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.TreeSet;
 
 /**
  * This class represents a <code>TextParser</code>
  */
 public class TextParser implements PhoneBillParser<PhoneBill> {
-    private final File file;
+    private final File fileText;
+    private final File prettyFile;
     private final String [] args;
     private final Integer firstPosition;
-
+    boolean textFileAvailable;
+    boolean prettyFileAvailable;
     /**
      * Creates a new <code>TextParser</code>
-     *
-     * @param file Path directory to the text file.
+     * @param fileText Path directory to the text file.
+     * @param prettyFile Path directory to the pretty text file.
      * @param args Arguments from command line
      * @param firstPosition The first position of information, not option in command line.
      */
-    public TextParser(File file, String[] args, Integer firstPosition) {
-        this.file = file;
+    public TextParser(File fileText, File prettyFile, String[] args, Integer firstPosition, boolean textFileAvailable, boolean prettyFileAvailable) {
+        this.fileText = fileText;
+        this.prettyFile = prettyFile;
         this.args = args;
         this.firstPosition = firstPosition;
+        this.textFileAvailable=textFileAvailable;
+        this.prettyFileAvailable=prettyFileAvailable;
     }
 
     /**
@@ -34,28 +38,36 @@ public class TextParser implements PhoneBillParser<PhoneBill> {
      */
     @Override
     public PhoneBill parse() throws ParserException {
-        if(file.exists()){
-            try {
-                return readTextFile();
-            } catch (IOException e) {
-                throw new ParserException("Cannot parsing the file",e);
-                //e.printStackTrace();
+        PhoneBill bill= new PhoneBill(args[firstPosition],new TreeSet<PhoneCall>());
+        if(textFileAvailable) {
+            if (fileText.exists()) {
+                try {
+                    bill = readTextFile();
+                } catch (IOException e) {
+                    throw new ParserException("Cannot parsing the file", e);
+                    //e.printStackTrace();
+                }
             }
-
         }
-        else {
-            PhoneBill bill= new PhoneBill(args[firstPosition],new ArrayList<PhoneCall>());
-            PhoneCall call = new PhoneCall(args[firstPosition+1],args[firstPosition+2],args[firstPosition+3] + " "+ args[firstPosition+4],args[firstPosition+5]+" "+args[firstPosition+6]);
+            PhoneCall call = new PhoneCall(args[firstPosition+1],args[firstPosition+2],args[firstPosition+3] + " "+ args[firstPosition+4]+" "+args[firstPosition+5],args[firstPosition+6]+" "+args[firstPosition+7]+" "+args[firstPosition+8]);
             bill.addPhoneCall(call);
-            TextDumper textDumper = new TextDumper(file);
+            if (textFileAvailable){
+            TextDumper textDumper = new TextDumper(fileText);
             try {
                 textDumper.dump(bill);
-                return bill;
             } catch (IOException e) {
-                throw new ParserException("Cannot parsing the file",e);
-                //e.printStackTrace();
+                throw new ParserException("Cannot write the file", e);
             }
         }
+        if (prettyFileAvailable){
+            PrettyPrinter prettyPrinter=new PrettyPrinter(prettyFile);
+            try {
+                prettyPrinter.dump(bill);
+            } catch (IOException e) {
+                throw new ParserException("Cannot write the file", e);
+            }
+        }
+        return bill;
     }
 
 
@@ -64,11 +76,11 @@ public class TextParser implements PhoneBillParser<PhoneBill> {
      */
     public PhoneBill readTextFile() throws IOException {
         try {
-            PhoneBill bill = new PhoneBill("",new ArrayList<>());
-            Scanner scanner = new Scanner(file);
+            PhoneBill bill = new PhoneBill("",new TreeSet<PhoneCall>());
+            Scanner scanner = new Scanner(fileText);
             String customerName=scanner.nextLine();
             if (customerName.equals(args[firstPosition])) {
-                bill=new PhoneBill(customerName,new ArrayList<PhoneCall>());
+                bill=new PhoneBill(customerName,new TreeSet<PhoneCall>());
 //                while (scanner.hasNext()) {
 //                    String caller = scanner.next();
 //                    String callee = scanner.next();
@@ -82,22 +94,22 @@ public class TextParser implements PhoneBillParser<PhoneBill> {
                     if(line.isEmpty())
                         continue;
                     String[] tokens = line.split("\\s");
-                    if (tokens.length<6){
+                    if (tokens.length<8){
                         System.err.println("Missing argument in text file");
                         System.exit(1);
-                    } else if (tokens.length>6){
+                    } else if (tokens.length>8){
                         System.err.println("Redundant argument in text file");
                         System.exit(1);
                     }else {
                         String caller = tokens[0];
                         String callee = tokens[1];
-                        String start = tokens[2]+ " " + tokens[3];
-                        String end = tokens[4] + " " + tokens[5];
+                        String start = tokens[2]+ " " + tokens[3] +" "+tokens[4];
+                        String end = tokens[5] + " " + tokens[6]+" "+tokens[7];
                         if(!caller.matches("\\d{3}-\\d{3}-\\d{4}$")||!callee.matches("\\d{3}-\\d{3}-\\d{4}$")){
                             System.err.println("Phone number from file is invalid");
                             System.exit(1);
                         }
-                        if(!start.matches("\\d{1,2}/\\d{1,2}/\\d{4} \\d{1,2}:\\d{1,2}$")|| !end.matches("\\d{1,2}/\\d{1,2}/\\d{4} \\d{1,2}:\\d{1,2}$")){
+                        if(!start.matches("\\d{1,2}/\\d{1,2}/\\d{4} \\d{1,2}:\\d{1,2} (AM|PM|am|pm)$")|| !end.matches("\\d{1,2}/\\d{1,2}/\\d{4} \\d{1,2}:\\d{1,2} (AM|PM|am|pm)$")){
                             System.err.println("Date or Time is invalid format");
                             System.exit(1);
                         }
@@ -105,10 +117,10 @@ public class TextParser implements PhoneBillParser<PhoneBill> {
                         bill.addPhoneCall(call);
                     }
                 }
-                PhoneCall call = new PhoneCall(args[firstPosition+1],args[firstPosition+2],args[firstPosition+3] + " "+ args[firstPosition+4],args[firstPosition+5]+" "+args[firstPosition+6]);
-                bill.addPhoneCall(call);
-                TextDumper textDumper = new TextDumper(file);
-                textDumper.dump(bill);
+//                PhoneCall call = new PhoneCall(args[firstPosition+1],args[firstPosition+2],args[firstPosition+3] + " "+ args[firstPosition+4]+ " "+ args[firstPosition+5],args[firstPosition+6]+" "+args[firstPosition+7]+ " "+ args[firstPosition+8]);
+//                bill.addPhoneCall(call);
+//                TextDumper textDumper = new TextDumper(file);
+//                textDumper.dump(bill);
             }
             else {
                 System.err.println("Customer name does not match the file");
