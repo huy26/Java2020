@@ -6,6 +6,7 @@ import edu.pdx.cs410J.ParserException;
 import java.io.File;
 import java.io.*;
 import java.util.TreeSet;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -167,7 +168,7 @@ public class Project3 {
           System.out.print("from " +itr.getStartTimeString() + " ");
           System.out.print("to "+itr.getEndTimeString()+ ". ");
           long diff = itr.getEndTime().getTime() - itr.getStartTime().getTime();
-          long diffMinutes = diff / (60 * 1000) % 60;
+          long diffMinutes = TimeUnit.MILLISECONDS.toMinutes(diff);
           System.out.println("Duration: "+ diffMinutes + " minutes");
         }
       }

@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.time.Duration;
 import java.util.TreeSet;
+import java.util.concurrent.TimeUnit;
 
 /**
  * This class represents a <code>PrettyPrinter</code>
@@ -42,7 +43,7 @@ public class PrettyPrinter implements PhoneBillDumper {
                 printWriter.print("from " +itr.getStartTimeString() + " ");
                 printWriter.print("to "+itr.getEndTimeString()+ ". ");
                 long diff = itr.getEndTime().getTime() - itr.getStartTime().getTime();
-                long diffMinutes = diff / (60 * 1000) % 60;
+                long diffMinutes = TimeUnit.MILLISECONDS.toMinutes(diff);
                 printWriter.println("Duration: "+ diffMinutes + " minutes");
             }
             printWriter.close();
