@@ -69,7 +69,7 @@ public class Project3 {
             String [] tokens = args[i+1].split("/");
             path=System.getProperty("user.dir");
             for(int j=0;j<tokens.length-1;j++){
-              path=path + "/"+tokens[i];
+              path=path + "/"+tokens[j];
             }
             fileName=tokens[tokens.length-1];
             if(!fileName.matches(".*.txt$"))
@@ -87,7 +87,7 @@ public class Project3 {
               String[] tokens = args[i + 1].split("/");
               prettyPath = System.getProperty("user.dir");
               for (int j = 0; j < tokens.length - 1; j++) {
-                prettyPath = prettyPath + "/" + tokens[i];
+                prettyPath = prettyPath + "/" + tokens[j];
               }
               prettyFileName = tokens[tokens.length - 1];
               if (!prettyFileName.matches(".*.txt$"))

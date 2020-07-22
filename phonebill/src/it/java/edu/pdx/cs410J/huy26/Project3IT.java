@@ -222,4 +222,12 @@ public class Project3IT extends InvokeMainTestCase {
     assertThat(result.getTextWrittenToStandardOut(),containsString("Phone call from 123-456-7847 to 123-456-7815 from 11/5/20, 4:13 PM to 11/5/20, 5:30 PM"));
     assertThat(result.getExitCode(),equalTo(0));
   }
+  @Ignore
+  @Test
+  public void printPrettyFile1(){
+    String [] args = new String[]{"-pretty","huy26/pretty.txt","-textFile","huy26/test.txt","-print", "Project2","123-456-7847","123-456-7815","11/5/2020","4:13","PM","11/5/2020","5:30","PM"};
+    MainMethodResult result = invokeMain(Project3.class,args);
+    assertThat(result.getTextWrittenToStandardOut(),containsString("Phone call from 123-456-7847 to 123-456-7815 from 11/5/20, 4:13 PM to 11/5/20, 5:30 PM"));
+    assertThat(result.getExitCode(),equalTo(0));
+  }
 }
