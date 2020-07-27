@@ -49,8 +49,8 @@ public class PhoneBillRestClientIT {
   @Test
   public void test2AddPhoneCall() throws IOException, ParserException {
     PhoneBillRestClient client = newPhoneBillRestClient();
-    String customer = "TEST WORD";
-    String caller = "TEST DEFINITION";
+    String customer = "Customer";
+    String caller = "123-456-7890";
     client.addPhoneCall(customer, caller);
 
     PhoneBill phoneBill = client.getPhoneBill(customer);

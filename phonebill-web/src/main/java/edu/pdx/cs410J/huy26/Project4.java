@@ -1,9 +1,12 @@
 package edu.pdx.cs410J.huy26;
 
+import edu.pdx.cs410J.ParserException;
 import edu.pdx.cs410J.web.HttpRequestHelper;
 
 import java.io.IOException;
 import java.io.PrintStream;
+import java.io.PrintWriter;
+import java.net.HttpURLConnection;
 
 /**
  * The main class that parses the command line and communicates with the
@@ -16,8 +19,8 @@ public class Project4 {
     public static void main(String... args) {
         String hostName = null;
         String portString = null;
-        String word = null;
-        String definition = null;
+        String customer = null;
+        String caller = null;
 
         for (String arg : args) {
             if (hostName == null) {
@@ -26,11 +29,11 @@ public class Project4 {
             } else if ( portString == null) {
                 portString = arg;
 
-            } else if (word == null) {
-                word = arg;
+            } else if (customer == null) {
+                customer = arg;
 
-            } else if (definition == null) {
-                definition = arg;
+            } else if (caller == null) {
+                caller = arg;
 
             } else {
                 usage("Extraneous command line argument: " + arg);
@@ -47,7 +50,7 @@ public class Project4 {
         int port;
         try {
             port = Integer.parseInt( portString );
-            
+
         } catch (NumberFormatException ex) {
             usage("Port \"" + portString + "\" must be an integer");
             return;
@@ -57,27 +60,41 @@ public class Project4 {
 
         String message;
         try {
-            if (word == null) {
-                message="Fix me";
+            if (customer == null) {
 
-            } else if (definition == null) {
-                // Print all dictionary entries
-                message = "Fix me, too!";
+            } else if (caller == null) {
+                try {
+                    PhoneBill bill = client.getPhoneBill(customer);
+
+                    PrintWriter pw = new PrintWriter(System.out, true);
+                    PhoneBillPrettyPrinter pretty = new PhoneBillPrettyPrinter(pw);
+                    pretty.dump(bill);
+                } catch (ParserException e) {
+                    System.err.println("Could not parse response!");
+                    System.exit(1);
+                } catch (PhoneBillRestClient.PhoneBillRestException ex){
+                    switch (ex.gethttpStatusCode()){
+                        case HttpURLConnection.HTTP_NOT_FOUND:
+                            System.err.println("No phone bill for customer "+customer);
+                            System.exit(1);
+                            return;
+                        default:
+
+                    }
+                }
 
             } else {
-                // Post the word/definition pair
-                client.addPhoneCall(word, definition);
-                message = Messages.definedWordAs(word, definition);
+                // Post the customer/caller pair
+                client.addPhoneCall(customer, caller);
+                message = Messages.definedWordAs(customer, caller);
             }
 
         } catch ( IOException ex ) {
             error("While contacting server: " + ex);
             return;
         }
-
-        System.out.println(message);
-
         System.exit(0);
+
     }
 
     /**
