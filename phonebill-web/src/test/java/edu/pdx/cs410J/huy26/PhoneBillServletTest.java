@@ -1,5 +1,6 @@
 package edu.pdx.cs410J.huy26;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
@@ -21,25 +22,35 @@ import static org.mockito.Mockito.*;
 public class PhoneBillServletTest {
 
   @Test
-  public void initiallyServletContainsNoDictionaryEntries() throws ServletException, IOException {
+  public void requestWithNoCustomerReturnMissingParameter() throws ServletException, IOException {
     PhoneBillServlet servlet = new PhoneBillServlet();
 
     HttpServletRequest request = mock(HttpServletRequest.class);
     HttpServletResponse response = mock(HttpServletResponse.class);
-    PrintWriter pw = mock(PrintWriter.class);
-
-    when(response.getWriter()).thenReturn(pw);
 
     servlet.doGet(request, response);
 
-    int expectedWords = 0;
-    verify(pw).println(Messages.formatWordCount(expectedWords));
-    verify(response).setStatus(HttpServletResponse.SC_OK);
+    verify(response).sendError(HttpServletResponse.SC_PRECONDITION_FAILED,Messages.missingRequiredParameter("customer"));
+  }
+
+  @Test
+  public void requestCustomerWithNoPhoneBillReturnNotFound() throws ServletException, IOException {
+    PhoneBillServlet servlet = new PhoneBillServlet();
+
+    HttpServletRequest request = mock(HttpServletRequest.class);
+    String customerName = "Dave";
+    when(request.getParameter("customer")).thenReturn(customerName);
+
+    HttpServletResponse response = mock(HttpServletResponse.class);
+
+    servlet.doGet(request, response);
+
+    verify(response).sendError(HttpServletResponse.SC_NOT_FOUND,Messages.noPhoneBillForCustomer(customerName));
   }
 
   @Test
   public void addOneWordToDictionary() throws ServletException, IOException {
-    PhoneBillServlet servlet = new PhoneBillServlet();
+     PhoneBillServlet servlet = new PhoneBillServlet();
 
     String word = "TEST WORD";
     String definition = "TEST DEFINITION";
