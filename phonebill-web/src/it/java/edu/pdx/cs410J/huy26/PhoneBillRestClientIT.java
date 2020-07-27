@@ -1,5 +1,6 @@
 package edu.pdx.cs410J.huy26;
 
+import edu.pdx.cs410J.ParserException;
 import edu.pdx.cs410J.web.HttpRequestHelper;
 import org.junit.Assert;
 import org.junit.FixMethodOrder;
@@ -35,7 +36,7 @@ public class PhoneBillRestClientIT {
   }
 
   @Test
-  public void test1NonExistentPhoneBillThrowsException() throws IOException {
+  public void test1NonExistentPhoneBillThrowsException() throws IOException, ParserException {
     PhoneBillRestClient client = newPhoneBillRestClient();
     try {
       client.getPhoneBill("Dave");
@@ -46,22 +47,18 @@ public class PhoneBillRestClientIT {
 
   }
   @Test
-  public void test2DefineOneWord() throws IOException {
+  public void test2AddPhoneCall() throws IOException, ParserException {
     PhoneBillRestClient client = newPhoneBillRestClient();
-    String testWord = "TEST WORD";
-    String testDefinition = "TEST DEFINITION";
-    client.addDictionaryEntry(testWord, testDefinition);
+    String customer = "TEST WORD";
+    String caller = "TEST DEFINITION";
+    client.addPhoneCall(customer, caller);
 
-    String definition = client.getPhoneBill(testWord);
-    assertThat(definition, equalTo(testDefinition));
+    PhoneBill phoneBill = client.getPhoneBill(customer);
+    assertThat(phoneBill.getCustomer(), equalTo(customer));
+
+    PhoneCall phoneCall = phoneBill.getPhoneCalls().iterator().next();
+    assertThat(phoneCall.getCaller(),equalTo(caller));
   }
 
-  @Test
-  public void test4MissingRequiredParameterReturnsPreconditionFailed() throws IOException {
-    PhoneBillRestClient client = newPhoneBillRestClient();
-    HttpRequestHelper.Response response = client.postToMyURL(Map.of());
-    assertThat(response.getContent(), containsString(Messages.missingRequiredParameter("word")));
-    assertThat(response.getCode(), equalTo(HttpURLConnection.HTTP_PRECON_FAILED));
-  }
 
 }

@@ -1,5 +1,6 @@
 package edu.pdx.cs410J.huy26;
 
+import org.hamcrest.Matchers;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -15,8 +16,7 @@ import java.io.StringWriter;
 import static edu.pdx.cs410J.huy26.PhoneBillURLParameters.CALLER_NUMBER_PARAMETER;
 import static edu.pdx.cs410J.huy26.PhoneBillURLParameters.CUSTOMER_PARAMETER;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.*;
 import static org.mockito.Mockito.*;
 
 /**
@@ -70,7 +70,7 @@ public class PhoneBillServletTest {
 
     servlet.doPost(request, response);
 
-    verify(pw, times(0)).println(any(String.class));
+    verify(pw, times(0)).println(Matchers.any(String.class));
     verify(response).setStatus(HttpServletResponse.SC_OK);
 
     PhoneBill phoneBill = servlet.getPhoneBill(customer);
@@ -79,6 +79,34 @@ public class PhoneBillServletTest {
 
     PhoneCall phoneCall = phoneBill.getPhoneCalls().iterator().next();
     assertThat(phoneCall.getCaller(),equalTo(callerPhoneNumber));
+  }
+
+  @Test
+  public void requestingExistingPhoneBillDumpsItToPrintWriter() throws IOException, ServletException {
+    String customer = "Customer";
+    String callerPhoneNumber = "503-123-4567";
+
+    PhoneBill bill = new PhoneBill(customer);
+    bill.addPhoneCall(new PhoneCall(callerPhoneNumber));
+
+    PhoneBillServlet servlet=new PhoneBillServlet();
+    servlet.addPhoneBill(bill);
+
+    HttpServletRequest request = mock(HttpServletRequest.class);
+   when(request.getParameter(CUSTOMER_PARAMETER)).thenReturn(customer);
+
+    HttpServletResponse response = mock(HttpServletResponse.class);
+    StringWriter sw = new StringWriter();
+    PrintWriter pw = new PrintWriter(sw,true);
+    when(response.getWriter()).thenReturn(pw);
+
+    servlet.doGet(request, response);
+
+    verify(response).setStatus(HttpServletResponse.SC_OK);
+
+    String textPhoneBill = sw.toString();
+    assertThat(textPhoneBill,containsString(customer));
+    assertThat(textPhoneBill,containsString(callerPhoneNumber));
   }
 
 }
