@@ -3,6 +3,7 @@ package edu.pdx.cs410J.huy26;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.verification.VerificationMode;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -13,6 +14,7 @@ import java.io.StringWriter;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.mockito.Mockito.*;
 
 /**
@@ -49,35 +51,32 @@ public class PhoneBillServletTest {
   }
 
   @Test
-  public void addOneWordToDictionary() throws ServletException, IOException {
+  public void addPhoneCallToPhoneBill() throws ServletException, IOException {
      PhoneBillServlet servlet = new PhoneBillServlet();
 
-    String word = "TEST WORD";
-    String definition = "TEST DEFINITION";
+    String customer = "Customer";
+    String callerPhoneNumber = "503-123-4567";
 
     HttpServletRequest request = mock(HttpServletRequest.class);
-    when(request.getParameter("word")).thenReturn(word);
-    when(request.getParameter("definition")).thenReturn(definition);
+    when(request.getParameter("customer")).thenReturn(customer);
+    when(request.getParameter("callerNumber")).thenReturn(callerPhoneNumber);
 
     HttpServletResponse response = mock(HttpServletResponse.class);
-
-    // Use a StringWriter to gather the text from multiple calls to println()
-    StringWriter stringWriter = new StringWriter();
-    PrintWriter pw = new PrintWriter(stringWriter, true);
+    PrintWriter pw = mock(PrintWriter.class);
 
     when(response.getWriter()).thenReturn(pw);
 
     servlet.doPost(request, response);
 
-    assertThat(stringWriter.toString(), equalTo(Messages.definedWordAs(word, definition) + System.lineSeparator()));
+    verify(pw, times(0)).println(any(String.class));
+    verify(response).setStatus(HttpServletResponse.SC_OK);
 
-    // Use an ArgumentCaptor when you want to make multiple assertions against the value passed to the mock
-    ArgumentCaptor<Integer> statusCode = ArgumentCaptor.forClass(Integer.class);
-    verify(response).setStatus(statusCode.capture());
+    PhoneBill phoneBill = servlet.getPhoneBill(customer);
+    assertThat(phoneBill,notNullValue());
+    assertThat(phoneBill.getCustomer(), equalTo(customer));
 
-    assertThat(statusCode.getValue(), equalTo(HttpServletResponse.SC_OK));
-
-    assertThat(servlet.getDefinition(word), equalTo(definition));
+    PhoneCall phoneCall = phoneBill.getPhoneCalls().iterator().next();
+    assertThat(phoneCall.getCaller(),equalTo(callerPhoneNumber));
   }
 
 }
