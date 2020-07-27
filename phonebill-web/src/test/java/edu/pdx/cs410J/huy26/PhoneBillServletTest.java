@@ -12,6 +12,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
+import static edu.pdx.cs410J.huy26.PhoneBillURLParameters.CALLER_NUMBER_PARAMETER;
+import static edu.pdx.cs410J.huy26.PhoneBillURLParameters.CUSTOMER_PARAMETER;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
@@ -32,7 +34,7 @@ public class PhoneBillServletTest {
 
     servlet.doGet(request, response);
 
-    verify(response).sendError(HttpServletResponse.SC_PRECONDITION_FAILED,Messages.missingRequiredParameter("customer"));
+    verify(response).sendError(HttpServletResponse.SC_PRECONDITION_FAILED,Messages.missingRequiredParameter(CUSTOMER_PARAMETER));
   }
 
   @Test
@@ -41,7 +43,7 @@ public class PhoneBillServletTest {
 
     HttpServletRequest request = mock(HttpServletRequest.class);
     String customerName = "Dave";
-    when(request.getParameter("customer")).thenReturn(customerName);
+    when(request.getParameter(CUSTOMER_PARAMETER)).thenReturn(customerName);
 
     HttpServletResponse response = mock(HttpServletResponse.class);
 
@@ -58,8 +60,8 @@ public class PhoneBillServletTest {
     String callerPhoneNumber = "503-123-4567";
 
     HttpServletRequest request = mock(HttpServletRequest.class);
-    when(request.getParameter("customer")).thenReturn(customer);
-    when(request.getParameter("callerNumber")).thenReturn(callerPhoneNumber);
+    when(request.getParameter(CUSTOMER_PARAMETER)).thenReturn(customer);
+    when(request.getParameter(CALLER_NUMBER_PARAMETER)).thenReturn(callerPhoneNumber);
 
     HttpServletResponse response = mock(HttpServletResponse.class);
     PrintWriter pw = mock(PrintWriter.class);

@@ -11,6 +11,9 @@ import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
 
+import static edu.pdx.cs410J.huy26.PhoneBillURLParameters.CALLER_NUMBER_PARAMETER;
+import static edu.pdx.cs410J.huy26.PhoneBillURLParameters.CUSTOMER_PARAMETER;
+
 /**
  * This servlet ultimately provides a REST API for working with an
  * <code>PhoneBill</code>.  However, in its current state, it is an example
@@ -19,10 +22,7 @@ import java.util.Map;
  */
 public class PhoneBillServlet extends HttpServlet
 {
-    static final String CUSTOMER_PARAMETER = "customer";
-    static final String CALLER_NUMBER_PARAMETER = "callerNumber";
-
-    private final Map<String, PhoneBill> phoneBills = new HashMap<>();
+        private final Map<String, PhoneBill> phoneBills = new HashMap<>();
 
     /**
      * Handles an HTTP GET request from a client by writing the definition of the

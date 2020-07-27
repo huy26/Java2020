@@ -6,6 +6,7 @@ import edu.pdx.cs410J.web.HttpRequestHelper;
 import java.io.IOException;
 import java.util.Map;
 
+import static edu.pdx.cs410J.huy26.PhoneBillURLParameters.CUSTOMER_PARAMETER;
 import static java.net.HttpURLConnection.HTTP_OK;
 
 /**
@@ -34,10 +35,10 @@ public class PhoneBillRestClient extends HttpRequestHelper
 
 
     /**
-     * Returns the definition for the given word
+     * Returns the definition for the given customer
      */
-    public String getPhoneBill(String word) throws IOException {
-      Response response = get(this.url, Map.of("customer", word));
+    public String getPhoneBill(String customer) throws IOException {
+      Response response = get(this.url, Map.of(CUSTOMER_PARAMETER, customer));
       throwExceptionIfNotOkayHttpStatus(response);
       String content = response.getContent();
       return Messages.parseDictionaryEntry(content).getValue();
