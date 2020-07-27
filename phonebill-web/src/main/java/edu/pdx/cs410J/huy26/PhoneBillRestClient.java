@@ -31,19 +31,13 @@ public class PhoneBillRestClient extends HttpRequestHelper
         this.url = String.format( "http://%s:%d/%s/%s", hostName, port, WEB_APP, SERVLET );
     }
 
-    /**
-     * Returns all dictionary entries from the server
-     */
-    public Map<String, String> getAllDictionaryEntries() throws IOException {
-      Response response = get(this.url, Map.of());
-      return Messages.parseDictionary(response.getContent());
-    }
+
 
     /**
      * Returns the definition for the given word
      */
-    public String getDefinition(String word) throws IOException {
-      Response response = get(this.url, Map.of("word", word));
+    public String getPhoneBill(String word) throws IOException {
+      Response response = get(this.url, Map.of("customer", word));
       throwExceptionIfNotOkayHttpStatus(response);
       String content = response.getContent();
       return Messages.parseDictionaryEntry(content).getValue();
@@ -59,7 +53,7 @@ public class PhoneBillRestClient extends HttpRequestHelper
       return post(this.url, dictionaryEntries);
     }
 
-    public void removeAllDictionaryEntries() throws IOException {
+    public void removeAllPhoneBills() throws IOException {
       Response response = delete(this.url, Map.of());
       throwExceptionIfNotOkayHttpStatus(response);
     }
@@ -74,9 +68,15 @@ public class PhoneBillRestClient extends HttpRequestHelper
 
     @VisibleForTesting
     class PhoneBillRestException extends RuntimeException {
-      PhoneBillRestException(int httpStatusCode) {
+        private final int httpStatusCode;
+
+        PhoneBillRestException(int httpStatusCode) {
         super("Got an HTTP Status Code of " + httpStatusCode);
+        this.httpStatusCode = httpStatusCode;
       }
+        public int gethttpStatusCode(){
+            return this.httpStatusCode;
+        }
     }
 
 }

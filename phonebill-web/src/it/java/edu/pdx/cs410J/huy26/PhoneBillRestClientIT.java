@@ -1,6 +1,7 @@
 package edu.pdx.cs410J.huy26;
 
 import edu.pdx.cs410J.web.HttpRequestHelper;
+import org.junit.Assert;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
@@ -12,6 +13,7 @@ import java.util.Map;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Integration test that tests the REST calls made by {@link PhoneBillRestClient}
@@ -27,18 +29,22 @@ public class PhoneBillRestClientIT {
   }
 
   @Test
-  public void test0RemoveAllDictionaryEntries() throws IOException {
+  public void test0RemoveAllPhoneBills() throws IOException {
     PhoneBillRestClient client = newPhoneBillRestClient();
-    client.removeAllDictionaryEntries();
+    client.removeAllPhoneBills();
   }
 
   @Test
-  public void test1EmptyServerContainsNoDictionaryEntries() throws IOException {
+  public void test1NonExistentPhoneBillThrowsException() throws IOException {
     PhoneBillRestClient client = newPhoneBillRestClient();
-    Map<String, String> dictionary = client.getAllDictionaryEntries();
-    assertThat(dictionary.size(), equalTo(0));
-  }
+    try {
+      client.getPhoneBill("Dave");
+      Assert.fail("Should have thrown a PhoneBillRestException");
+    } catch (PhoneBillRestClient.PhoneBillRestException ex){
+      assertThat(ex.gethttpStatusCode(),equalTo(HttpURLConnection.HTTP_NOT_FOUND));
+    }
 
+  }
   @Test
   public void test2DefineOneWord() throws IOException {
     PhoneBillRestClient client = newPhoneBillRestClient();
@@ -46,7 +52,7 @@ public class PhoneBillRestClientIT {
     String testDefinition = "TEST DEFINITION";
     client.addDictionaryEntry(testWord, testDefinition);
 
-    String definition = client.getDefinition(testWord);
+    String definition = client.getPhoneBill(testWord);
     assertThat(definition, equalTo(testDefinition));
   }
 
