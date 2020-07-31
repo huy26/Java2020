@@ -6,6 +6,9 @@ import edu.pdx.cs410J.web.HttpRequestHelper;
 
 import java.io.*;
 import java.net.HttpURLConnection;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -17,7 +20,7 @@ public class Project4 {
 
     public static final String MISSING_ARGS = "Missing command line arguments";
 
-    public static void main(String... args) throws IOException {
+    public static void main(String... args) throws IOException, ParseException {
         String hostName = null;
         String portString = null;
         String customer = null;
@@ -147,6 +150,15 @@ public class Project4 {
                             usage("Missing command line argument");
                         } else if(end==null){
                             usage("Missing command line argument");
+                        } else {
+                            Date startTime = null;
+                            Date endTime = null;
+                            startTime = new SimpleDateFormat("MM/dd/yyyy hh:mm a").parse(start);
+                            endTime=new SimpleDateFormat("MM/dd/yyyy hh:mm a").parse(end);
+                            int compare = startTime.compareTo(endTime);
+                            if(compare > 0 ){
+                                usage("End Date Time must occur after Start Date Time");
+                            }
                         }
                         PhoneBill bill = client.getPhoneBill(customer);
                         PrintWriter pw = new PrintWriter(System.out, true);
@@ -183,7 +195,7 @@ public class Project4 {
     }
 
 
-    public static void checkSyntax(String caller, String callee, String start, String end){
+    public static void checkSyntax(String caller, String callee, String start, String end) throws ParseException {
         if(caller!=null){
             Pattern phonePattern = Pattern.compile("\\d{3}-\\d{3}-\\d{4}$");
                     Matcher matcher1 = phonePattern.matcher(caller);
