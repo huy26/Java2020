@@ -57,6 +57,7 @@ public class Project3 {
       if(matcher.matches()==true){
         if(args[i].equals("-print")||args[i].equals("-README")||args[i].equals("-textFile")||args[i].equals("-pretty")){
           if (args[i].equals("-README")){
+            String s=Project3.class.getResource("/").getPath();
             InputStream readme = Project3.class.getResourceAsStream("README.txt");
             printREADME(readme);
             firstArgPos++;

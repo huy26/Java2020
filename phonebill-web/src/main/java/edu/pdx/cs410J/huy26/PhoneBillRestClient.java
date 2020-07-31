@@ -3,13 +3,13 @@ package edu.pdx.cs410J.huy26;
 import com.google.common.annotations.VisibleForTesting;
 import edu.pdx.cs410J.ParserException;
 import edu.pdx.cs410J.web.HttpRequestHelper;
+import groovy.transform.Undefined;
 
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.Map;
 
-import static edu.pdx.cs410J.huy26.PhoneBillURLParameters.CALLER_NUMBER_PARAMETER;
-import static edu.pdx.cs410J.huy26.PhoneBillURLParameters.CUSTOMER_PARAMETER;
+import static edu.pdx.cs410J.huy26.PhoneBillURLParameters.*;
 import static java.net.HttpURLConnection.HTTP_OK;
 
 /**
@@ -48,10 +48,19 @@ public class PhoneBillRestClient extends HttpRequestHelper
       return parser.parse();
     }
 
-    public void addPhoneCall(String customer, String caller) throws IOException {
-      Response response = postToMyURL(Map.of(CUSTOMER_PARAMETER, customer, CALLER_NUMBER_PARAMETER, caller));
+
+    public void addPhoneCall(String customer, String caller,String callee,String start,String end) throws IOException {
+        //String phoneCall = caller + " "+callee+ " "+start+" "+end;
+      Response response = postToMyURL(Map.of(CUSTOMER_PARAMETER, customer, CALLER_NUMBER_PARAMETER, caller,CALLEE_NUMBER_PARAMETER,callee,START_DATE_TIME,start,END_DATE_TIME,end));
       throwExceptionIfNotOkayHttpStatus(response);
     }
+//    public PhoneBill getSearchPhoneCall(String customer, String start, String end){
+//        Response response = get(this.url, Map.of(CUSTOMER_PARAMETER, customer));
+//        throwExceptionIfNotOkayHttpStatus(response);
+//        String content = response.getContent();
+//        PhoneBillTextParser parser = new PhoneBillTextParser(new StringReader(content));
+//        return parser.parse();
+//    }
 
     @VisibleForTesting
     Response postToMyURL(Map<String, String> dictionaryEntries) throws IOException {

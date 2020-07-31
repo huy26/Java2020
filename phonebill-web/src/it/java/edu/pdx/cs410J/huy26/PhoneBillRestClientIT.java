@@ -51,7 +51,11 @@ public class PhoneBillRestClientIT {
     PhoneBillRestClient client = newPhoneBillRestClient();
     String customer = "Customer";
     String caller = "123-456-7890";
-    client.addPhoneCall(customer, caller);
+    String callee = "123-456-4515";
+    String start = "5/11/2020 5:30 pm";
+    String end = "5/11/2020 5:37 pm";
+
+    client.addPhoneCall(customer, caller,callee,start,end);
 
     PhoneBill phoneBill = client.getPhoneBill(customer);
     assertThat(phoneBill.getCustomer(), equalTo(customer));

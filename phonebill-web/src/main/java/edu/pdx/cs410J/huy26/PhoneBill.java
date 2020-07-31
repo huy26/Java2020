@@ -4,12 +4,22 @@ import edu.pdx.cs410J.AbstractPhoneBill;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.TreeSet;
 
+/**
+ * This class represents a <code>PhoneBill</code>
+ */
 public class PhoneBill extends AbstractPhoneBill<PhoneCall> {
 
     private final String customer;
-    private Collection<PhoneCall> calls = new ArrayList<>();
+    private TreeSet<PhoneCall> calls = new TreeSet<>();
 
+    /**
+     * Creates a new <code>PhoneBill</code>
+     *
+     * @param customer
+     *        The customer's name
+     */
     public PhoneBill(String customer) {
         this.customer = customer;
     }

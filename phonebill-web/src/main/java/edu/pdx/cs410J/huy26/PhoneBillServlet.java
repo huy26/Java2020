@@ -10,9 +10,10 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import static edu.pdx.cs410J.huy26.PhoneBillURLParameters.CALLER_NUMBER_PARAMETER;
-import static edu.pdx.cs410J.huy26.PhoneBillURLParameters.CUSTOMER_PARAMETER;
+import static edu.pdx.cs410J.huy26.PhoneBillURLParameters.*;
 
 /**
  * This servlet ultimately provides a REST API for working with an
@@ -34,21 +35,56 @@ public class PhoneBillServlet extends HttpServlet
     protected void doGet( HttpServletRequest request, HttpServletResponse response ) throws ServletException, IOException
     {
         response.setContentType( "text/plain" );
+        String start=null;
+        String end = null;
 
-        String customer = getParameter( CUSTOMER_PARAMETER, request );
+        String customer = getParameter(CUSTOMER_PARAMETER, request );
         if(customer==null){
             missingRequiredParameter(response, CUSTOMER_PARAMETER);
             return;
         }
+        if(request.getParameterMap().size()==3){
+             start = getParameter(START_DATE_TIME,request);
+            if(start==null){
+                missingRequiredParameter(response,START_DATE_TIME);
+                return;
+            }
+             end = getParameter(END_DATE_TIME,request);
+            if(end==null){
+                missingRequiredParameter(response,END_DATE_TIME);
+                return;
+            }
+        }
+        if(start!=null){
+            Pattern timePattern = Pattern.compile("\\d{1,2}/\\d{1,2}/\\d{4} \\d{1,2}:\\d{1,2} (AM|am|PM|pm)$");
+            Matcher matcher3 = timePattern.matcher(start);
+            if (matcher3.matches() == false) {
+                response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED,"Start Date Time is invalid format");
+            }
+        }
+        if(end!=null){
+            Pattern timePattern = Pattern.compile("\\d{1,2}/\\d{1,2}/\\d{4} \\d{1,2}:\\d{1,2} (AM|am|PM|pm)$");
+            Matcher matcher3 = timePattern.matcher(end);
+            if (matcher3.matches() == false) {
+                response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED,"End Date Time is invalid format");
+            }
+        }
+
         PhoneBill bill = getPhoneBill(customer);
         if(bill==null){
             response.sendError(HttpServletResponse.SC_NOT_FOUND,Messages.noPhoneBillForCustomer(customer));
         }else{
-            PhoneBillTextDumper dumper = new PhoneBillTextDumper(response.getWriter());
-            dumper.dump(bill);
+            if(request.getParameterMap().size()==3) {
+                PhoneBillPrettyPrinter pretty = new PhoneBillPrettyPrinter(response.getWriter());
+                pretty.dumpSearch(bill,start,end);
+            } else {
+                PhoneBillTextDumper dumper = new PhoneBillTextDumper(response.getWriter());
+                dumper.dump(bill);
+            }
             response.setStatus(HttpServletResponse.SC_OK);
         }
     }
+
 
     /**
      * Handles an HTTP POST request by storing the dictionary entry for the
@@ -71,11 +107,58 @@ public class PhoneBillServlet extends HttpServlet
             missingRequiredParameter( response, CALLER_NUMBER_PARAMETER);
             return;
         }
-
-        PhoneBill bill = new PhoneBill(customer);
-        bill.addPhoneCall(new PhoneCall(caller));
+        String callee = getParameter(CALLEE_NUMBER_PARAMETER, request);
+        if(callee==null){
+            missingRequiredParameter( response, CALLEE_NUMBER_PARAMETER);
+            return;
+        }
+        String start = getParameter(START_DATE_TIME, request);
+        if(start == null){
+            missingRequiredParameter( response, START_DATE_TIME);
+            return;
+        }
+        String end = getParameter(END_DATE_TIME, request);
+        if(end == null){
+            missingRequiredParameter( response, END_DATE_TIME);
+            return;
+        }
+        if(callee!=null){
+            Pattern phonePattern = Pattern.compile("\\d{3}-\\d{3}-\\d{4}$");
+            Matcher matcher1 = phonePattern.matcher(caller);
+            if (matcher1.matches() == false) {
+               response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED,"Phone Number must be formatted as nnn-nnn-nnnn");
+            }
+        }
+        if(caller!=null){
+            Pattern phonePattern = Pattern.compile("\\d{3}-\\d{3}-\\d{4}$");
+            Matcher matcher1 = phonePattern.matcher(callee);
+            if (matcher1.matches() == false) {
+                response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED,"Phone Number must be formatted as nnn-nnn-nnnn");
+            }
+        }
+        if(start!=null){
+            Pattern timePattern = Pattern.compile("\\d{1,2}/\\d{1,2}/\\d{4} \\d{1,2}:\\d{1,2} (AM|am|PM|pm)$");
+            Matcher matcher3 = timePattern.matcher(start);
+            if (matcher3.matches() == false) {
+                response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED,"Start Date Time is invalid format");
+            }
+        }
+        if(end!=null){
+            Pattern timePattern = Pattern.compile("\\d{1,2}/\\d{1,2}/\\d{4} \\d{1,2}:\\d{1,2} (AM|am|PM|pm)$");
+            Matcher matcher3 = timePattern.matcher(end);
+            if (matcher3.matches() == false) {
+                response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED,"End Date Time is invalid format");
+            }
+        }
+        PhoneBill bill = getPhoneBill(customer);
+        if(bill==null){
+            bill=new PhoneBill(customer);
+        }
+        bill.addPhoneCall(new PhoneCall(caller, callee, start, end));
         this.phoneBills.put(customer, bill);
-
+        PrintWriter pw = new PrintWriter(response.getWriter());
+        PhoneBillTextDumper dumper = new PhoneBillTextDumper(pw);
+        dumper.dumpNewestPhoneCall(bill);
         response.setStatus( HttpServletResponse.SC_OK);
     }
 
