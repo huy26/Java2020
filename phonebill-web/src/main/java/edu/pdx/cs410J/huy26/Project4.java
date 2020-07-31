@@ -177,6 +177,24 @@ public class Project4 {
                     }
 
                 } else {
+                    if(caller==null){
+                        usage("Missing command line argument");
+                    } else if (callee == null) {
+                        usage("Missing command line argument");
+                    } else if(start==null){
+                        usage("Missing command line argument");
+                    } else if(end==null){
+                        usage("Missing command line argument");
+                    } else {
+                        Date startTime = null;
+                        Date endTime = null;
+                        startTime = new SimpleDateFormat("MM/dd/yyyy hh:mm a").parse(start);
+                        endTime=new SimpleDateFormat("MM/dd/yyyy hh:mm a").parse(end);
+                        int compare = startTime.compareTo(endTime);
+                        if(compare > 0 ){
+                            usage("End Date Time must occur after Start Date Time");
+                        }
+                    }
                     if(printOption){
                         System.out.println(customer);
                         System.out.println("Phone added: "+ caller+" " + callee+ " "+start+ " "+end);
